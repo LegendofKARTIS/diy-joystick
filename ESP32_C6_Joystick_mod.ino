@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <BleGamepad.h>
 
-//ABXY or SXCT
+//A,B,X,Y or S,X,C,T
 #define X_BUTTON 9         // A
 #define CIRCLE_BUTTON 14    // B
 #define TRIANGLE_BUTTON 15  // Y
@@ -23,10 +23,8 @@
 #define L3_BUTTON 8
 
 //JOYSTICKS AXIS
-//Right
 #define RIGHT_VRX_JOYSTICK 5
 #define RIGHT_VRY_JOYSTICK 4
-//Left
 #define LEFT_VRX_JOYSTICK 2 
 #define LEFT_VRY_JOYSTICK 6       
 
@@ -48,7 +46,7 @@ uint16_t leftVrxJoystickValue, leftVryJoystickValue, rightVrxJoystickValue, righ
 
 
 typedef enum{ANDROID, PC} GamepadModes;
-GamepadModes gamepadMode = ANDROID;
+GamepadModes gamepadMode = ANDROID; // Change this to ANDROID or PC
 
 
 BleGamepad bleGamepad("BLE Gamepad", "ESP");
@@ -64,7 +62,7 @@ void setup() {
   }
 
   bleGamepadConfig.setAutoReport(false);
-  // CONTROLLER_TYPE_JOYSTICK, CONTROLLER_TYPE_GAMEPAD (DEFAULT) OR CONTROLLER_TYPE_MULTI_AXIS
+  // CONTROLLER_TYPE_JOYSTICK (for PC), CONTROLLER_TYPE_GAMEPAD (for Mobile/Android)
   bleGamepadConfig.setControllerType(CONTROLLER_TYPE_GAMEPAD);
   bleGamepadConfig.setVid(0xe502);
   bleGamepadConfig.setPid(0xabcd);
@@ -74,14 +72,12 @@ void setup() {
 
 void loop() {
   if(bleGamepad.isConnected()){
-    //Joysticks lecture
     leftVrxJoystickLecture = analogRead(LEFT_VRX_JOYSTICK);
     leftVryJoystickLecture = analogRead(LEFT_VRY_JOYSTICK);
     rightVrxJoystickLecture = analogRead(RIGHT_VRX_JOYSTICK);
     rightVryJoystickLecture = analogRead(RIGHT_VRY_JOYSTICK);
 
     Serial.println(rightVrxJoystickLecture);
-    //Compute joysticks value
     leftVrxJoystickValue = map(leftVrxJoystickLecture, 4095, 0, 0, 32737);
     leftVryJoystickValue = map(leftVryJoystickLecture, 0, 4095, 0, 32737);
     rightVrxJoystickValue = map(rightVrxJoystickLecture, 4095, 0, 0, 32737);
